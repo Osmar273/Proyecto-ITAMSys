@@ -1,0 +1,94 @@
+<div class="p-8 bg-gray-50 min-h-screen text-gray-900">
+  <div class="max-w-7xl mx-auto">
+    <div class="flex justify-between items-center mb-10">
+      <div>
+        <h1 class="text-3xl font-extrabold tracking-tight">Equipos y Hardware</h1>
+        <p class="text-gray-500 mt-1">Ciclo de vida y control de activos tecnológicos.</p>
+      </div>
+      <button routerLink="/equipos/nuevo" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg transition-all">
+        + Nuevo Activo
+      </button>
+    </div>
+
+    <div class="mb-8 flex gap-4">
+      <div class="relative w-full max-w-md">
+        <input type="text"
+               [(ngModel)]="textoBusqueda"
+               (input)="filtrar()"
+               placeholder="Buscar por código ITAM, tipo o marca..."
+               class="w-full px-5 py-4 pl-12 rounded-2xl border-2 border-gray-100 focus:border-blue-500 outline-none bg-white shadow-sm transition-all">
+        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+          🔍
+        </span>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+      <table class="w-full text-left border-collapse">
+        <thead class="bg-gray-100 border-b border-gray-200">
+          <tr>
+            <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase">Código ITAM</th>
+            <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase">Tipo / Marca</th>
+            <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase text-center">Estado Operativo</th>
+            <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase text-right">Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100">
+
+          <tr *ngIf="cargando">
+            <td colspan="4" class="px-6 py-20 text-center text-gray-500 font-medium italic">
+              Conectando con el servidor...
+            </td>
+          </tr>
+
+          <ng-container *ngIf="!cargando">
+            <tr *ngFor="let eq of equiposFiltrados" class="hover:bg-gray-50 transition-colors" [ngClass]="{'opacity-60 bg-gray-100': !eq.activo}">
+              <td class="px-6 py-4 font-bold text-blue-700 font-mono">{{ eq.codigoItam }}</td>
+              <td class="px-6 py-4">
+                <div class="font-semibold text-gray-900">{{ eq.tipo }}</div>
+                <div class="text-xs text-gray-500">{{ eq.marca }}</div>
+              </td>
+              <td class="px-6 py-4 text-center">
+                <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider"
+                      [ngClass]="{
+                        'bg-green-100 text-green-700': eq.estado === 'Disponible',
+                        'bg-yellow-100 text-yellow-700': eq.estado === 'Asignado',
+                        'bg-orange-100 text-orange-700': eq.estado === 'En Mantenimiento',
+                        'bg-gray-800 text-white': eq.estado === 'Baja Definitiva'
+                      }">
+                  {{ eq.estado }}
+                </span>
+              </td>
+              <td class="px-6 py-4 text-right">
+                <div class="flex justify-end gap-3">
+                  <button (click)="editar(eq)" class="text-blue-600 font-bold text-xs hover:text-blue-800">Editar</button>
+
+                  <button *ngIf="eq.estado === 'Disponible'" (click)="enviarAMantenimiento(eq.idEquipo)"
+                          class="text-orange-500 font-bold text-xs hover:text-orange-700">
+                    Taller
+                  </button>
+
+                  <button *ngIf="eq.estado !== 'Baja Definitiva'" (click)="retirarActivo(eq.idEquipo)"
+                          class="text-red-500 font-bold text-xs hover:text-red-800">
+                    Baja
+                  </button>
+
+                  <button (click)="toggleEstado(eq.idEquipo)" class="text-gray-400 font-bold text-xs hover:text-gray-900">
+                    {{ eq.activo ? 'Desactivar' : 'Activar' }}
+                  </button>
+                </div>
+              </td>
+            </tr>
+
+            <tr *ngIf="equiposFiltrados.length === 0">
+              <td colspan="4" class="px-6 py-20 text-center text-gray-400">
+                No se encontraron equipos que coincidan con la búsqueda.
+              </td>
+            </tr>
+          </ng-container>
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

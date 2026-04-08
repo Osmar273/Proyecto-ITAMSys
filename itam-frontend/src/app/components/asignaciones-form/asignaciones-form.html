@@ -1,0 +1,50 @@
+<div class="flex justify-center pt-12 pb-10 px-6 bg-gray-50 h-full">
+  <div class="bg-white p-10 rounded-3xl shadow-2xl w-full max-w-2xl border border-gray-100">
+    <h2 class="text-3xl font-black text-gray-800 mb-8 text-center uppercase tracking-tighter">
+      Nueva Asignación de Hardware
+    </h2>
+
+    <form (ngSubmit)="guardar()" #f="ngForm" class="space-y-6">
+
+      <div>
+        <label class="block text-sm font-bold text-gray-600 mb-2">Seleccionar Personal</label>
+        <select name="idEmpleado" [(ngModel)]="asignacion.idEmpleado" required
+                class="w-full px-5 py-4 rounded-2xl border-2 border-gray-100 focus:border-blue-500 outline-none bg-gray-50 text-gray-700">
+          <option value="" disabled selected>Elija a quién entregar el hardware...</option>
+          <option *ngFor="let p of listaPersonal" [value]="p.idEmpleado">
+            {{ p.nombreCompleto }} ({{ p.departamento }})
+          </option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block text-sm font-bold text-gray-600 mb-2">Hardware a Asignar (Solo Disponibles)</label>
+        <select name="idEquipo" [(ngModel)]="asignacion.idEquipo" required
+                class="w-full px-5 py-4 rounded-2xl border-2 border-gray-100 focus:border-blue-500 outline-none bg-gray-50 text-gray-700">
+          <option value="" disabled selected>Elija el equipo físico...</option>
+          <option *ngFor="let eq of equiposDisponibles" [value]="eq.idEquipo">
+            {{ eq.codigoItam }} - {{ eq.tipo }} {{ eq.marca }}
+          </option>
+        </select>
+        <p *ngIf="equiposDisponibles.length === 0" class="text-red-500 text-xs mt-2 font-bold">
+          No hay hardware disponible actualmente.
+        </p>
+      </div>
+
+      <div>
+        <label class="block text-sm font-bold text-gray-600 mb-2">Condición de Entrega</label>
+        <input type="text" name="condicionEntrega" [(ngModel)]="asignacion.condicionEntrega" required placeholder="Ej: Nuevo, Usado en buen estado..."
+               class="w-full px-5 py-4 rounded-2xl border-2 border-gray-100 focus:border-blue-500 outline-none bg-gray-50">
+      </div>
+
+      <div class="flex gap-4 pt-6">
+        <button type="button" routerLink="/asignaciones" class="flex-1 py-4 bg-gray-200 text-gray-700 rounded-2xl font-black uppercase hover:bg-gray-300 transition-all">
+          Cancelar
+        </button>
+        <button type="submit" [disabled]="!f.valid || equiposDisponibles.length === 0" class="flex-1 py-4 bg-blue-600 text-white rounded-2xl font-black uppercase hover:bg-blue-700 shadow-lg disabled:opacity-50 transition-all">
+          Asignar Activo
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

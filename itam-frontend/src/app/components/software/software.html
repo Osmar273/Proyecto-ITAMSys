@@ -1,0 +1,57 @@
+<div class="p-8 bg-gray-50 min-h-screen">
+  <div class="max-w-7xl mx-auto">
+    <div class="flex justify-between items-center mb-8">
+      <div>
+        <h1 class="text-2xl font-bold text-gray-900">Software y Licencias</h1>
+        <p class="text-gray-500 text-sm mt-1">Gestión de activos digitales y claves de activación.</p>
+      </div>
+      <button routerLink="/software/nuevo" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg transition-all flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        </svg>
+        + Nueva Licencia
+      </button>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+      <table class="w-full text-left">
+        <thead class="bg-gray-50 border-b border-gray-100">
+          <tr>
+            <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase">Nombre / Versión</th>
+            <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase">Clave de Licencia</th>
+            <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase">Vencimiento</th>
+            <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase">Estado</th>
+            <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase text-right">Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100">
+          <tr *ngFor="let sw of listaSoftware" class="hover:bg-blue-50 transition-colors" [ngClass]="{'opacity-60': !sw.activo}">
+            <td class="px-6 py-4">
+              <div class="font-bold text-gray-900">{{ sw.nombre }}</div>
+              <div class="text-xs text-gray-500">v{{ sw.version }}</div>
+            </td>
+            <td class="px-6 py-4">
+              <code class="text-blue-600 bg-blue-50 px-2 py-1 rounded text-xs font-mono">{{ sw.licenciaClave }}</code>
+            </td>
+            <td class="px-6 py-4 text-sm text-gray-600">
+              {{ sw.fechaVencimiento | date:'dd/MM/yyyy' }}
+            </td>
+            <td class="px-6 py-4">
+              <span [ngClass]="sw.activo ? 'text-green-700 bg-green-100' : 'text-red-700 bg-red-100'" class="px-3 py-1 rounded-full text-xs font-bold uppercase">
+                {{ sw.activo ? 'Activa' : 'Inactiva' }}
+              </span>
+            </td>
+            <td class="px-6 py-4 text-right flex justify-end gap-3">
+              <button (click)="editar(sw)" class="text-blue-600 hover:text-blue-800 font-bold text-sm">Editar</button>
+              <button (click)="toggleEstado(sw.idSoftware)" class="text-gray-400 hover:text-red-600 font-bold text-sm">Eliminar</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div *ngIf="listaSoftware.length === 0" class="p-20 text-center text-gray-400 font-medium">
+        No hay licencias de software registradas.
+      </div>
+    </div>
+  </div>
+</div>
